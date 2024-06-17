@@ -55,20 +55,11 @@ class App extends Component {
     this.setState(prev=> ({isdark:!prev.isdark}))
   }
 
-  errorcall=()=> {
-    const {errormsg}=this.state
-    return (
-      <>
-      <h1>{errormsg}</h1>
-      </>
-    )
-  }
+
 
 
   render() {
-    const {weather,time,inputValue,isdark,errormsg}=this.state
-    const msg = errormsg==="" ? null : this.errorcall()
-    console.log(errormsg)
+    const {weather,time,inputValue,isdark}=this.state
     let num = weather[0]
     let roundedNum = Math.round(num-273.15);
     const darkmode=isdark ? "dark" : ""
