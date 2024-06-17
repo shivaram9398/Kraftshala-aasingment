@@ -1,4 +1,5 @@
 import {Component} from "react"
+import React from 'react'
 import './App.css';
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { TiLocationOutline } from "react-icons/ti";
@@ -15,19 +16,19 @@ class App extends Component {
 
 
   gettime=async(data)=> {
-    const key="W7P8STJI47GO"
+    const key=process.env.REACT_APP_KEY
     try {
       const time=await fetch(`http://api.timezonedb.com/v2.1/get-time-zone?key=${key}&format=json&by=position&lat=${data.coord.lat}&lng=${data.coord.lon}`)
     const res=await time.json()
     this.setState({time:[res.cityName,res.countryName,res.formatted]})
     } catch (error) {
-      this.setState({errormsg:error})
+      this.setState({errormsg:error.message})
     }
   }
   
 
   getdatafromapi= async()=> {
-    const appid="fa469b89c2fd55fc3401f0a8f2f7af5f"
+    const appid=process.env.REACT_APP_APPID
     const {inputValue}=this.state
     try {
     const url=`https://api.openweathermap.org/data/2.5/weather?q=${inputValue}&appid=${appid}`
@@ -37,7 +38,7 @@ class App extends Component {
     this.setState({weather:[data.main.temp,data.main.temp_max,data.main.temp_min,data.main.humidity,data.wind.speed]}, ()=>this.gettime(data))
 
     }catch (e) {
-      this.setState({errormsg:e})
+      this.setState({errormsg:e.message})
     }
     this.setState({inputValue:""})
   }
@@ -54,9 +55,20 @@ class App extends Component {
     this.setState(prev=> ({isdark:!prev.isdark}))
   }
 
+  errorcall=()=> {
+    const {errormsg}=this.state
+    return (
+      <>
+      <h1>{errormsg}</h1>
+      </>
+    )
+  }
+
 
   render() {
-    const {weather,time,inputValue,isdark}=this.state
+    const {weather,time,inputValue,isdark,errormsg}=this.state
+    const msg = errormsg==="" ? null : this.errorcall()
+    console.log(errormsg)
     let num = weather[0]
     let roundedNum = Math.round(num-273.15);
     const darkmode=isdark ? "dark" : ""
@@ -64,6 +76,7 @@ class App extends Component {
     
 
     return (
+
 <>
 <div className={`main-container ${white}`}>
 <div className= {`container ${darkmode}`}>
